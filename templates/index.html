@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Story Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            color: #ffffff;
+            overflow-x: hidden;
+            background-image: url("https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExZDV5NXAzeHgzbG9zYWtyYWE3M2hueXFlem01M2E2dGJvamYxcjBuaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/YOQdvwX3oFBLxxMyoH/giphy.webp");
+            background-size: cover; 
+            background-repeat: no-repeat;
+        }
+
+        /* Background video */
+        video#background-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            filter: brightness(0.5) blur(3px);
+        }
+
+        /* Overlay gradient */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(58, 12, 163, 0.8), rgba(255, 0, 150, 0.7));
+            z-index: 0;
+        }
+
+        /* Main container */
+        .container {
+            position: relative;
+            z-index: 1;
+            margin-top: 60px;
+        }
+
+        .card {
+            background: rgba(0, 0, 0, 0.8);
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+            padding: 20px;
+        }
+
+        h1 {
+            font-weight: 900;
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #ff7eb3, #ff758c, #ff6f61);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+        .form-label{
+            color: rgb(233, 117, 246);
+        }
+
+        textarea,
+        input {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 2px solid #ff6f61;
+            color: white;
+            border-radius: 10px;
+            font-size: 1rem;
+            padding: 10px;
+        }
+
+        textarea::placeholder,
+        input::placeholder {
+            color: #cccccc;
+        }
+
+        textarea:focus,
+        input:focus {
+            border-color: #ff85a1;
+            outline: none;
+            box-shadow: 0 0 5px rgba(255, 133, 161, 0.5);
+        }
+
+        .btn-custom {
+            background: linear-gradient(90deg, #ff758c, #ff7eb3);
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 30px;
+            padding: 10px 20px;
+            transition: all 0.4s ease-in-out;
+            text-shadow: 0px 0px 8px rgba(255, 255, 255, 0.8);
+        }
+
+        .btn-custom:hover {
+            background: linear-gradient(90deg, #ff7eb3, #ff758c, #ff6f61);
+            box-shadow: 0 0 20px #ff6f61;
+            transform: translateY(-5px);
+        }
+
+        #output {
+            margin-top: 20px;
+            color: rgb(231,168,245);
+        }
+        
+        h1{
+            color: rgb(231,168,245)
+        }
+        .text-info {
+            color: rgb(231,168,245);
+            font-weight: bold;
+        }
+
+        .text-dark {
+            font-size: 1.1rem;
+            color: rgb(173, 216, 230)  !important;
+        }
+
+        footer {
+            text-align: center;
+            color: #ffffff;
+            font-size: 0.8rem;
+            margin-top: 20px;
+        }
+
+        footer a {
+            color: #ff85a1;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.9);
+        }
+    </style>
+</head>
+<body>
+    <!-- Background video -->
+    <!-- <video id="background-video" autoplay loop muted>
+        <source src="https://media.giphy.com/media/l1J9EdzfOSgfyueLm/giphy.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video> -->
+
+    <!-- Overlay gradient -->
+    <div class="overlay"></div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="card">
+            <h1>StoryVerse</h1>
+            <p class="text-center">✨ Where your imagination meets thrilling action ✨</p>
+            <form id="story-form">
+                <div class="mb-3">
+                    <label for="story_context" class="form-label">✨ Story Context</label>
+                    <textarea class="form-control" id="story_context" name="story_context" rows="4" placeholder="Describe your story so far..." required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="user_action" class="form-label">💥 Your Action</label>
+                    <input type="text" class="form-control" id="user_action" name="user_action" placeholder="What happens next? (e.g., Hero attacks with a sword)" required>
+                </div>
+                <button type="submit" class="btn btn-custom w-100">🔥 Generate Next Phase</button>
+            </form>
+            <hr>
+            <div id="output" style="display: none;">
+                <h5>Validation Result:</h5>
+                <p id="validation-result" class="text-info"></p>
+                <h5>Next Part of the Story:</h5>
+                <p id="new-story" class="text-dark"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        Powered by <a href="#">StoryVerse AI</a> 🚀
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $("#story-form").on("submit", function(event) {
+            event.preventDefault();
+            const storyContext = $("#story_context").val();
+            const userAction = $("#user_action").val();
+
+            $.post("/process", { story_context: storyContext, user_action: userAction })
+                .done(function(data) {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        $("#output").show();
+                        $("#validation-result").text(data.validation_result);
+                        $("#new-story").text(data.new_story);
+                    }
+                })
+                .fail(function() {
+                    alert("An error occurred. Please try again.");
+                });
+        });
+    </script>
+</body>
+</html>
